@@ -1,0 +1,10 @@
+{
+ "name": "bruceleeapiservice",
+ "private": true,
+ "version": "0.0.1",
+ "description": "Bruce Lee Quotes API Service",
+ "author": "Sadruddin Junejo <sjunejo1@gmail.com>",
+ "dependencies": {
+   "express": "4.13.3" 
+ }
+}

@@ -3,12 +3,11 @@ var http = require('http');
 var fs = require('fs');
 
 // Constants
-var PORT = 8080;
+var PORT = 8081;
+var apiKeyFileName = 'api_key.txt';
 
 // App
 var app = express();
-
-var apiKeyFileName = 'api_key.txt';
 
 var options = {
 	host: 'www.stands4.com'
@@ -51,8 +50,12 @@ function queryAPI(){
 
 app.get('/', function(req, res){
     res.send('Hello world\n');
-    responseBody = queryAPI();
+	queryAPI();
 })
 
+function storeInDatabase(responseBody) {
+	// Make request to database service with response Body in POST
+	// data
+}
 app.listen(PORT);
 console.log('Running on http://localhost:' + PORT);

@@ -15,15 +15,14 @@ var options = {
 	host: 'www.stands4.com'
 };
 
-readAPIKey(apiKeyFileName);
-
-function readAPIKey(apiKeyFileName) {
+function readAPIKeyAndQueryAPI(apiKeyFileName, queryAPI) {
     fs.readFile(apiKeyFileName, 'utf8', function(err,data){
         if (err) {
             return console.log(err);
         };
         console.log(data);
         options.path = data;
+		queryAPI();
     });
 }
 
@@ -55,7 +54,7 @@ function queryAPI(){
 
 app.get('/', function(req, res){
     // res.send('Hello world\n');
-	queryAPI();
+	readAPIKeyAndQueryAPI(apiKeyFileName, queryAPI);
 })
 
 function storeInDatabase(responseBody) {

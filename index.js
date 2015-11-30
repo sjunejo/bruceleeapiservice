@@ -1,6 +1,8 @@
 var express = require('express');
 var http = require('http');
 var fs = require('fs');
+var parseXMLString = require('xml2js').parseString;
+var util = require('util');
 
 // Constants
 var PORT = 8081;
@@ -35,10 +37,13 @@ function queryAPI(){
 		res.setEncoding('utf8');
 		res.on('data', function (chunk) {
             responseBody+=chunk;
-           
 		});
 		res.on('end', function() {
-             console.log(responseBody);
+             // console.log(responseBody);
+			 parseXMLString(responseBody, function(err, result){
+				console.log(util.inspect(result, false, null));
+			 });
+			
              // Call to database service here
              
 		})
@@ -49,7 +54,7 @@ function queryAPI(){
 }
 
 app.get('/', function(req, res){
-    res.send('Hello world\n');
+    // res.send('Hello world\n');
 	queryAPI();
 })
 

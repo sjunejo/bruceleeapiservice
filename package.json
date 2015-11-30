@@ -5,6 +5,7 @@
  "description": "Bruce Lee Quotes API Service",
  "author": "Sadruddin Junejo <sjunejo1@gmail.com>",
  "dependencies": {
-   "express": "4.13.3" 
+   "express": "~4.13.3",
+   "xml2js": "~0.4.15" 
  }
 }

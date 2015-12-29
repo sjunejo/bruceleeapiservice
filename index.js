@@ -3,6 +3,7 @@ var http = require('http');
 var fs = require('fs');
 var parseXMLString = require('xml2js').parseString;
 var util = require('util');
+var amqp = require('amqplib/callback_api');
 
 // Constants
 var PORT = 8081;
@@ -32,7 +33,6 @@ function queryAPI(){
     console.log(options.path);
 	var req = http.get(options, function(res) {
 		console.log('STATUS: ' + res.statusCode);
-        
 		res.setEncoding('utf8');
 		res.on('data', function (chunk) {
             responseBody+=chunk;
@@ -40,15 +40,28 @@ function queryAPI(){
 		res.on('end', function() {
              // console.log(responseBody);
 			 parseXMLString(responseBody, function(err, result){
-				console.log(util.inspect(result, false, null));
-			 });
-			
-             // Call to database service here
-             
+				var jsonResult = JSON.stringify(result);
+				//console.log(jsonResult);
+				// Call to database service here, to store quote data.
+				// so produce message
+			 sendToExchange(jsonResult);
+			 });  
 		})
 	});
 	req.on('error', function(e) {
 		console.log('problem with request: ' + e.message);
+	});
+}
+
+function sendToExchange(json) {
+	amqp.connect('amqp://localhost', function(err, conn) {
+	  conn.createChannel(function(err, ch) {
+		var exchange = 'quotes';
+		ch.assertExchange(exchange, 'fanout', {durable: false});
+		ch.publish(exchange, '', new Buffer(json));
+		console.log(" [x] Sent JSON");
+	  });
+	  // setTimeout(function() { conn.close(); process.exit(0) }, 500);
 	});
 }
 
@@ -61,5 +74,6 @@ function storeInDatabase(responseBody) {
 	// Make request to database service with response Body in POST
 	// data
 }
+
 app.listen(PORT);
 console.log('Running on http://localhost:' + PORT);
